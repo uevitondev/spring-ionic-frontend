@@ -6,13 +6,8 @@ import { CartService } from '../../services/domain/cart.service';
 import { ClienteDTO } from '../../models/cliente.dto';
 import { EnderecoDTO } from '../../models/endereco.dto';
 import { ClienteService } from '../../services/domain/cliente.service';
+import { PedidoService } from '../../services/domain/pedido.service';
 
-/**
- * Generated class for the OrderConfirmationPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -26,7 +21,7 @@ export class OrderConfirmationPage {
   cliente: ClienteDTO;
   endereco: EnderecoDTO;
 
-  constructor(public clienteService: ClienteService, public cartService: CartService, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public pedidoService: PedidoService , public clienteService: ClienteService, public cartService: CartService, public navCtrl: NavController, public navParams: NavParams) {
    this.pedido = this.navParams.get('pedido');
   }
 
@@ -49,6 +44,23 @@ export class OrderConfirmationPage {
 
   total(){
     return this.cartService.total();
+  }
+
+  back(){
+    return this.navCtrl.setRoot('CartPage');
+  }
+
+  checkout(){
+    return this.pedidoService.insert(this.pedido)
+    .subscribe(response => {
+      this.cartService.createOrClearCart();
+      console.log(response.headers.get('location'));
+    },
+    error => {
+      if(error.status == 403){
+        this.navCtrl.setRoot('HomePage');
+      }
+    });
   }
 
 }
