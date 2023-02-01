@@ -46,8 +46,5 @@ export class ProfilePage {
       this.cliente.imageUrl = `${API_CONFIG.bucketBaseUrl}/cp${this.cliente.id}.jpg`;
     }, error => {});
   }
-
-
-
-
+  
 }
